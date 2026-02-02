@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +16,7 @@ class UsuariosIndex extends Component
     public function render()
     {
         $users = User::where('role', '!=', User::ROLE_ENUM['secretario'])
-            ->where(function(Builder $qry){
+            ->where(function (Builder $qry) {
                 $qry->where('name', 'ilike', '%' . $this->search . '%')
                     ->orWhere('email', 'ilike', '%' . $this->search . '%');
             })
@@ -28,6 +28,5 @@ class UsuariosIndex extends Component
     public function updatingSearch()
     {
         $this->resetPage();
-
     }
 }

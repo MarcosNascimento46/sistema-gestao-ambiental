@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\Checklist;
 use App\Models\Requerimento;
@@ -19,6 +19,8 @@ class EnviarDocumentos extends Component
     use AuthorizesRequests;
     use WithFileUploads;
 
+    public Requerimento $requerimento;
+
     public $documentos;
 
     public $arquivos;
@@ -26,6 +28,8 @@ class EnviarDocumentos extends Component
     public $status;
 
     public $requerimentoStatus;
+
+    public $regras = [];
 
     protected $validationAttributes = [];
 
@@ -51,21 +55,21 @@ class EnviarDocumentos extends Component
         if ($documento->pivot->status == Checklist::STATUS_ENUM['nao_enviado'] || $documento->status == \App\Models\Checklist::STATUS_ENUM['recusado'] || ($this->requerimento->status == $this->requerimentoStatus['documentos_requeridos'] || $documento->status == \App\Models\Checklist::STATUS_ENUM['enviado'])) {
             $this->withValidator(function (Validator $validator) {
                 if ($validator->fails()) {
-                    $this->dispatchBrowserEvent('swal:fire', [
-                        'icon' => 'error',
-                        'title' => 'Erro ao enviar o arquivo, verifique o campo inválido!',
-                    ]);
+                    $this->dispatch('swal:fire',
+                        icon: 'error',
+                        title: 'Erro ao enviar o arquivo, verifique o campo invÃ¡lido!',
+                    );
                 }
             })->validateOnly($propertyName, $this->regras);
-            delete_file($documento->caminho);
+            delete_file($documento->pivot->caminho);
             $this->requerimento->documentos()->updateExistingPivot($id, [
                 'caminho' => $value->store("documentos/requerimentos/{$this->requerimento->id}"),
                 'status' => Checklist::STATUS_ENUM['enviado'],
             ]);
-            $this->dispatchBrowserEvent('swal:fire', [
-                'icon' => 'success',
-                'title' => 'Documento anexado!',
-            ]);
+            $this->dispatch('swal:fire',
+                icon: 'success',
+                title: 'Documento anexado!',
+            );
         }
     }
 
@@ -91,10 +95,10 @@ class EnviarDocumentos extends Component
         $this->attributes();
         $this->withValidator(function (Validator $validator) {
             if ($validator->fails()) {
-                $this->dispatchBrowserEvent('swal:fire', [
-                    'icon' => 'error',
-                    'title' => 'Erro ao enviar os arquivos, verifique os campos inválidos!',
-                ]);
+                $this->dispatch('swal:fire',
+                    icon: 'error',
+                    title: 'Erro ao enviar os arquivos, verifique os campos invÃ¡lidos!',
+                );
             }
         })->validate($this->rulesSubmit());
         $this->requerimento->status = Requerimento::STATUS_ENUM['documentos_enviados'];
@@ -106,7 +110,7 @@ class EnviarDocumentos extends Component
             Notification::send($this->requerimento->protocolista, new DocumentosEnviadosNotification($this->requerimento, 'Documentos enviados'));
         }
 
-        return redirect(route('requerimentos.index', 'atuais'))->with(['success' => 'Documentação enviada com sucesso. Aguarde o resultado da avaliação dos documentos.']);
+        return redirect(route('requerimentos.index', 'atuais'))->with(['success' => 'DocumentaÃ§Ã£o enviada com sucesso. Aguarde o resultado da avaliaÃ§Ã£o dos documentos.']);
     }
 
     public function render()
@@ -136,3 +140,7 @@ class EnviarDocumentos extends Component
         }
     }
 }
+
+
+
+

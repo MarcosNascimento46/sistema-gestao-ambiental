@@ -460,6 +460,12 @@ nav img {
     padding-right: 30px;
 }
 
+/* Avoid conflict with Tailwind's `.collapse { visibility: collapse; }` on Bootstrap navbars. */
+.navbar .collapse,
+.navbar-collapse {
+    visibility: visible;
+}
+
 label {
     font-weight: bold;
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\Empresa;
 use App\Models\Requerente;
@@ -14,7 +14,7 @@ class EmpresasIndex extends Component
     public $search = '';
 
     public function render()
-    {   
+    {
         $requerentes = Requerente::all();
         $search = preg_replace('/([0-9])/', '%$1', $this->search) . '%';
         $empresas = Empresa::where('nome', 'ilike', '%' . $this->search . '%')
@@ -27,6 +27,5 @@ class EmpresasIndex extends Component
     public function updatingSearch()
     {
         $this->resetPage();
-
     }
 }
