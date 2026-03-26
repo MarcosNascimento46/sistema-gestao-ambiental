@@ -442,7 +442,10 @@
                 if (this.files && this.files[0]) {
                     var file = new FileReader();
                     file.onload = function(e) {
-                        document.getElementById("photo").src = e.target.result;
+                        var img = document.querySelector("#photo img");
+                        if (img) {
+                            img.src = e.target.result;
+                        }
                     };
                     file.readAsDataURL(this.files[0]);
                 }
