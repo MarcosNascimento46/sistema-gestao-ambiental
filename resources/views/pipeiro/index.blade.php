@@ -70,9 +70,9 @@
                                                             <td>{{ $item->nome_apelido }}</td>
                                                             <td>{{ $item->capacidade_tanque }}</td>
                                                             <td>
-                                                                {{-- <a href="{{ route('pipeiros.show', ['id' => $item->id]) }}">
+                                                                <a href="{{ route('pipeiros.show', ['id' => $item->id]) }}">
                                                                     <img class="icon-licenciamento" width="20px;" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Motorista" title="Visualizar Motorista">
-                                                                </a> --}}
+                                                                </a>
                                                                 <a href="{{ route('pipeiros.edit', ['id' => $item->id]) }}">
                                                                     <img class="icon-licenciamento" width="20px;" src="{{ asset('img/edit-svgrepo-com.svg') }}" alt="Editar Motorista" title="Editar Motorista">
                                                                 </a>
@@ -100,12 +100,12 @@
                         <ul class="list-group list-unstyled">
                             <li>
                                 @can('isSecretarioOrBeneficiario', \App\Models\User::class)
-                                    {{-- <div title="Visualizar Beneficiario" class="d-flex align-items-center my-1 pt-0 pb-1">
-                                        <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Beneficiario">
+                                    <div title="Visualizar Motorista" class="d-flex align-items-center my-1 pt-0 pb-1">
+                                        <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Motorista">
                                         <div style="font-size: 15px;" class="align-middle mx-3">
                                             Visualizar Motorista
                                         </div>
-                                    </div> --}}
+                                    </div>
                                     <div title="Editar Beneficiario"class="d-flex align-items-center my-1 pt-0 pb-1">
                                         <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/edit-svgrepo-com.svg') }}" alt="Editar Beneficiario">
                                         <div style="font-size: 15px;" class="align-middle mx-3">

@@ -25,7 +25,7 @@
                                     <input id="nome_apelido" class="form-control" type="string" name="nome_apelido" value="{{ $pipeiro->nome_apelido }}" readonly>
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <label for="capacidade_tanque">{{ __('Capacidade do Tanque') }}</label>
+                                    <label for="capacidade_tanque">{{ __('Capacidade do Tanque (litros)') }}</label>
                                     <input id="capacidade_tanque" class="form-control" type="number" name="capacidade_tanque" value="{{ $pipeiro->capacidade_tanque }}" readonly>
                                 </div>
                             </div>
@@ -34,4 +34,5 @@
             </div>
         </div>
     </div>
+    @endsection
 </x-app-layout>
