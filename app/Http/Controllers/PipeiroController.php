@@ -14,7 +14,14 @@ class PipeiroController extends Controller
     {
         $this->authorize('isSecretarioOrBeneficiario', User::class);
 
-        $motoristas = Pipeiro::all();
+        $motoristasQuery = Pipeiro::query();
+        $buscar = $request->input('buscar');
+        if ($buscar) {
+            $motoristasQuery->where('motorista', 'ILIKE', "%{$buscar}%")
+                ->orWhere('nome_apelido', 'ILIKE', "%{$buscar}%");
+        }
+
+        $motoristas = $motoristasQuery->get();
 
         return view('pipeiro.index', compact('motoristas'));
     }

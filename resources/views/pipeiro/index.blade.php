@@ -17,11 +17,21 @@
                         <form>
                             @csrf
                             <div class="form-row mb-3">
-                                <div class="col-md-7">
-                                    <input type="text" class="form-control w-100" name="buscar" placeholder="Digite o nome do Motorista">
+                                <div class="col-md-7 position-relative">
+                                    <input type="text" class="form-control w-100" name="buscar" value="{{ request('buscar') }}" placeholder="Digite o nome do Motorista">
+                                    @if (request('buscar'))
+                                        <button type="button"
+                                            class="btn btn-link p-0"
+                                            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); text-decoration: none; color: #6c757d;"
+                                            aria-label="Limpar filtro"
+                                            title="Limpar filtro"
+                                            onclick="window.location='{{ route('pipeiros.index') }}'">
+                                            &times;
+                                        </button>
+                                    @endif
                                 </div>
-                                <div class="col-md-3">
-                                    <button type="submit" class="btn" style="background-color: #00883D; color: white;">Buscar</button>
+                                <div class="col-md-3 d-flex">
+                                    <button type="submit" class="btn" style="background-color: #00883D; color: white; width: 100%;">Buscar</button>
                                 </div>
                             </div>
                         </form>
