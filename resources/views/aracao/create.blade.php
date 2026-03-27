@@ -45,7 +45,7 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <label for="quantidade_ha">{{ __('Quantidade de Ha') }}</label>
+                                    <label for="quantidade_ha">{{ __('Área em hectares (ha)') }}</label>
                                     <input id="quantidade_ha" class="form-control @error('quantidade_ha') is-invalid @enderror" type="string" name="quantidade_ha" value="{{old('quantidade_ha')}}" autocomplete="quantidade_ha" placeholder="Digite a quantidade de Ha...">
                                     @error('quantidade_ha')
                                         <div id="validationServer03Feedback" class="invalid-feedback">

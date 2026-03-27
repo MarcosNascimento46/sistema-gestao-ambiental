@@ -27,7 +27,7 @@
             <th>Telefone</th>
             <th>Cultura</th>
             <th>Ponto de Referência</th>
-            <th>Quantidade de Ha</th>
+                <th>Área em hectares (ha)</th>
             <th>Quantidade de Horas</th>
         </tr>
         @foreach ($aracaos as $aracao)

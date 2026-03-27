@@ -38,7 +38,7 @@
                                             placeholder="Digite o ponto de referência...">
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="quantidade_ha">{{ __('Quantidade de Ha') }}</label>
+                                        <label for="quantidade_ha">{{ __('Área em hectares (ha)') }}</label>
                                         <input id="quantidade_ha" class="form-control" type="string" name="quantidade_ha"
                                             value="{{ $aracao->quantidade_ha }}" autocomplete="quantidade_ha"
                                             placeholder="Digite a quantidade de Ha...">

@@ -34,7 +34,7 @@
                                     <input id="quantidade_horas" class="form-control" type="string" name="quantidade_horas" value="{{ $aracao->quantidade_horas }}" readonly>
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <label for="quantidade_ha">{{ __('Quantidade de Ha') }}<span style="color: red; font-weight: bold;">*</span></label>
+                                    <label for="quantidade_ha">{{ __('Área em hectares (ha)') }}<span style="color: red; font-weight: bold;">*</span></label>
                                     <input id="quantidade_ha" class="form-control" type="string" name="quantidade_ha" value="{{ $aracao->quantidade_ha }}" readonly>
                                 </div>
                             </div>
