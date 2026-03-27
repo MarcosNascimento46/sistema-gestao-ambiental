@@ -42,8 +42,8 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="capacidade_tanque">{{ __('Capacidade do Tanque') }}<span style="color: red; font-weight: bold;">*</span></label>
-                                        <input id="capacidade_tanque" class="form-control @error('capacidade_tanque') is-invalid @enderror" type="string" name="capacidade_tanque" value="{{ $pipeiro->capacidade_tanque }}" required autofocus autocomplete="capacidade_tanque" placeholder="Digite a capacidade do tanque...">
+                                        <label for="capacidade_tanque">{{ __('Capacidade do Tanque (litros)') }}<span style="color: red; font-weight: bold;">*</span></label>
+                                        <input id="capacidade_tanque" class="form-control @error('capacidade_tanque') is-invalid @enderror" type="number" name="capacidade_tanque" value="{{ $pipeiro->capacidade_tanque }}" required autofocus autocomplete="capacidade_tanque" placeholder="Ex: 10000" min="0" step="1" inputmode="numeric">
                                         @error('capacidade_tanque')
                                             <div id="validationServer03Feedback" class="invalid-feedback">
                                                 {{ $message }}
