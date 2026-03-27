@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="col-md-6 form-group">
                                     <label for="quantidade_ha">{{ __('Área em hectares (ha)') }}</label>
-                                    <input id="quantidade_ha" class="form-control @error('quantidade_ha') is-invalid @enderror" type="string" name="quantidade_ha" value="{{old('quantidade_ha')}}" autocomplete="quantidade_ha" placeholder="Digite a quantidade de Ha...">
+                                    <input id="quantidade_ha" class="form-control @error('quantidade_ha') is-invalid @enderror" type="number" name="quantidade_ha" value="{{old('quantidade_ha')}}" autocomplete="quantidade_ha" placeholder="Ex: 1.5" min="0" step="0.01" inputmode="decimal">
                                     @error('quantidade_ha')
                                         <div id="validationServer03Feedback" class="invalid-feedback">
                                             {{ $message }}
@@ -57,7 +57,7 @@
                             <div class="form-row">
                                 <div class="col-md-6 form-group">
                                     <label for="quantidade_horas">{{ __('Quantidade de Horas') }}</label>
-                                    <input id="quantidade_horas" class="form-control @error('quantidade_horas') is-invalid @enderror" type="string" name="quantidade_horas" value="{{old('quantidade_horas')}}" autocomplete="quantidade_horas" placeholder="Digite a quantidade de Horas...">
+                                    <input id="quantidade_horas" class="form-control @error('quantidade_horas') is-invalid @enderror" type="number" name="quantidade_horas" value="{{old('quantidade_horas')}}" autocomplete="quantidade_horas" placeholder="Ex: 4" min="0" step="1" inputmode="numeric">
                                     @error('quantidade_horas')
                                         <div id="validationServer03Feedback" class="invalid-feedback">
                                             {{ $message }}
