@@ -36,7 +36,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="nome_apelido">{{ __('Nome (Apelido)') }}</label>
+                                        <label for="nome_apelido">{{ __('Nome (Apelido)') }}<span style="color: red; font-weight: bold;">*</span></label>
                                         <input id="nome_apelido" class="form-control @error('nome_apelido') is-invalid @enderror" type="string" name="nome_apelido" value="{{old('nome_apelido')}}" required autofocus autocomplete="nome_apelido" placeholder="Digite o nome/apelido...">
                                         @error('nome_apelido')
                                             <div id="validationServer03Feedback" class="invalid-feedback">
