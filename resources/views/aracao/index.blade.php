@@ -82,10 +82,10 @@
                                                 <tbody>
                                                     @foreach ($aracao as $item)
                                                         <tr>
-                                                            <td>{{ $item->beneficiario->nome }}</td>
-                                                            <td>{{ $item->beneficiario->codigo }}</td>
+                                                            <td>{{ $item->beneficiario->nome ?? '-' }}</td>
+                                                            <td>{{ $item->beneficiario->codigo ?? '-' }}</td>
                                                             <td>{{ $item->cultura }}</td>
-                                                            <td>{{ $item->beneficiario->Endereco->comunidade }}</td>
+                                                            <td>{{ $item->beneficiario->Endereco->comunidade ?? '-' }}</td>
                                                             <td>{{ $item->quantidade_ha }}</td>
                                                             <td>{{ $item->quantidade_horas }}</td>
                                                             <td>
@@ -122,6 +122,12 @@
                         <ul class="list-group list-unstyled">
                             <li>
                                 @can('isSecretarioOrBeneficiario', \App\Models\User::class)
+                                    <div title="Solicitar Aração" class="d-flex align-items-center my-1 pt-0 pb-1">
+                                        <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Grupo 1666.svg') }}" alt="Solicitar Aração">
+                                        <div style="font-size: 15px;" class="align-middle mx-3">
+                                            Solicitar Aração
+                                        </div>
+                                    </div>
                                     <div title="Visualizar Aração" class="d-flex align-items-center my-1 pt-0 pb-1">
                                         <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Aração">
                                         <div style="font-size: 15px;" class="align-middle mx-3">
@@ -165,7 +171,7 @@
                                     <form id="deletar-aracao-form-{{$item->id}}" method="POST" action="{{route('aracao.destroy', ['id' => $item->id])}}">
                                         @csrf
                                         <input type="hidden" name="_method" value="DELETE">
-                                        Tem certeza que deseja deletar o aração do beneficiário {{$item->beneficiario->nome}}?
+                                        Tem certeza que deseja deletar o aração do beneficiário {{$item->beneficiario->nome ?? '-' }}?
                                     </form>
                                 </div>
                                 <div class="modal-footer">

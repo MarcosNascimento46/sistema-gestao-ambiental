@@ -249,6 +249,8 @@
                 document.getElementById('bairro').value=("");
                 document.getElementById('cidade').value=("");
                 document.getElementById('uf').value=("");
+                document.getElementById('cidade').disabled = false;
+                document.getElementById('uf').disabled = false;
             }
 
             function limpa_formulário_cep_empresa() {
@@ -264,6 +266,8 @@
                     document.getElementById('bairro').value=(conteudo.bairro);
                     document.getElementById('cidade').value=(conteudo.localidade);
                     document.getElementById('uf').value=(conteudo.uf);
+                    document.getElementById('cidade').disabled = true;
+                    document.getElementById('uf').disabled = true;
                 } //end if.
                 else {
                     //CEP não Encontrado.

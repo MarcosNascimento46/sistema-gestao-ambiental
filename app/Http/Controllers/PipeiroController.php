@@ -14,7 +14,14 @@ class PipeiroController extends Controller
     {
         $this->authorize('isSecretarioOrBeneficiario', User::class);
 
-        $motoristas = Pipeiro::all();
+        $motoristasQuery = Pipeiro::query();
+        $buscar = $request->input('buscar');
+        if ($buscar) {
+            $motoristasQuery->where('motorista', 'ILIKE', "%{$buscar}%")
+                ->orWhere('nome_apelido', 'ILIKE', "%{$buscar}%");
+        }
+
+        $motoristas = $motoristasQuery->get();
 
         return view('pipeiro.index', compact('motoristas'));
     }
@@ -71,11 +78,13 @@ class PipeiroController extends Controller
         $this->authorize('isSecretarioOrBeneficiario', User::class);
 
         $pipeiro = Pipeiro::find($id);
-        $solicitacao_servico = SolicitacaoServico::where('pipeiro_id', $pipeiro->id)->first();
-        if($solicitacao_servico == null)
+        $solicitacao_servico = SolicitacaoServico::where('motorista_id', $pipeiro->id)->first();
+        if($solicitacao_servico == null) {
             $pipeiro->delete();
-        else{
+            return redirect()->route('pipeiros.index')->with('success', 'Motorista excluído com sucesso!');
+        } else {
             return redirect()->route('pipeiros.index')->with('error', 'Não é possível excluir um motorista que está vinculado a uma solicitação!');
         }
     }
 }
+

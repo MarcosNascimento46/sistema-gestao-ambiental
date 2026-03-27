@@ -13,6 +13,7 @@ class Aracao extends Model
 
     protected $fillable = [
         'beneficiario_id',
+        'solicitante',
         'cultura',
         'ponto_localizacao',
         'quantidade_ha',
@@ -31,7 +32,9 @@ class Aracao extends Model
 
     public function setAtributes($request)
     {
-        $this->beneficiario_id = $request['beneficiario_id'];
+        $beneficiarioId = $request['beneficiario_id'] ?? null;
+        $this->beneficiario_id = $beneficiarioId === '' ? null : $beneficiarioId;
+        $this->solicitante = $request['solicitante'];
         $this->cultura = $request['cultura'];
         $this->ponto_localizacao = $request['ponto_localizacao'];
         $this->quantidade_ha = $request['quantidade_ha'];

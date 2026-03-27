@@ -17,11 +17,21 @@
                         <form>
                             @csrf
                             <div class="form-row mb-3">
-                                <div class="col-md-7">
-                                    <input type="text" class="form-control w-100" name="buscar" placeholder="Digite o nome do Motorista">
+                                <div class="col-md-7 position-relative">
+                                    <input type="text" class="form-control w-100" name="buscar" value="{{ request('buscar') }}" placeholder="Digite o nome do Motorista">
+                                    @if (request('buscar'))
+                                        <button type="button"
+                                            class="btn btn-link p-0"
+                                            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); text-decoration: none; color: #6c757d;"
+                                            aria-label="Limpar filtro"
+                                            title="Limpar filtro"
+                                            onclick="window.location='{{ route('pipeiros.index') }}'">
+                                            &times;
+                                        </button>
+                                    @endif
                                 </div>
-                                <div class="col-md-3">
-                                    <button type="submit" class="btn" style="background-color: #00883D; color: white;">Buscar</button>
+                                <div class="col-md-3 d-flex">
+                                    <button type="submit" class="btn" style="background-color: #00883D; color: white; width: 100%;">Buscar</button>
                                 </div>
                             </div>
                         </form>
@@ -70,9 +80,9 @@
                                                             <td>{{ $item->nome_apelido }}</td>
                                                             <td>{{ $item->capacidade_tanque }}</td>
                                                             <td>
-                                                                {{-- <a href="{{ route('pipeiros.show', ['id' => $item->id]) }}">
+                                                                <a href="{{ route('pipeiros.show', ['id' => $item->id]) }}">
                                                                     <img class="icon-licenciamento" width="20px;" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Motorista" title="Visualizar Motorista">
-                                                                </a> --}}
+                                                                </a>
                                                                 <a href="{{ route('pipeiros.edit', ['id' => $item->id]) }}">
                                                                     <img class="icon-licenciamento" width="20px;" src="{{ asset('img/edit-svgrepo-com.svg') }}" alt="Editar Motorista" title="Editar Motorista">
                                                                 </a>
@@ -100,12 +110,12 @@
                         <ul class="list-group list-unstyled">
                             <li>
                                 @can('isSecretarioOrBeneficiario', \App\Models\User::class)
-                                    {{-- <div title="Visualizar Beneficiario" class="d-flex align-items-center my-1 pt-0 pb-1">
-                                        <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Beneficiario">
+                                    <div title="Visualizar Motorista" class="d-flex align-items-center my-1 pt-0 pb-1">
+                                        <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Motorista">
                                         <div style="font-size: 15px;" class="align-middle mx-3">
                                             Visualizar Motorista
                                         </div>
-                                    </div> --}}
+                                    </div>
                                     <div title="Editar Beneficiario"class="d-flex align-items-center my-1 pt-0 pb-1">
                                         <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/edit-svgrepo-com.svg') }}" alt="Editar Beneficiario">
                                         <div style="font-size: 15px;" class="align-middle mx-3">

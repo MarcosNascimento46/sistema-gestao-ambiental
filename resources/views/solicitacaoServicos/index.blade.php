@@ -204,7 +204,7 @@
                                                 @foreach ($solicitacao_servicos as $item)
                                                     @if ($item->status == \App\Models\SolicitacaoServico::STATUS_ENUM['rota_de_entrega'])
                                                         <tr>
-                                                            <td>{{ $item->motorista->motorista }}</td>
+                                                            <td>{{ $item->motorista ? $item->motorista->motorista : 'Não atribuido' }}</td>
                                                             <td>{{ $item->beneficiario->nome }}</td>
                                                             <td>{{ $item->codigo_solicitante }}
                                                             <td>{{ date('d/m/Y', strtotime($item->data_solicitacao)) }}
@@ -276,7 +276,7 @@
                                                 @foreach ($solicitacao_servicos as $item)
                                                     @if ($item->status == \App\Models\SolicitacaoServico::STATUS_ENUM['entregue'])
                                                         <tr>
-                                                            <td>{{ $item->motorista->motorista }}</td>
+                                                            <td>{{ $item->motorista ? $item->motorista->motorista : 'Não atribuido' }}</td>
                                                             <td>{{ $item->beneficiario->nome }}</td>
                                                             <td>{{ $item->codigo_solicitante }}</td>
                                                             <td>{{ date('d/m/Y', strtotime($item->data_solicitacao)) }}
@@ -348,7 +348,7 @@
                                                 @foreach ($solicitacao_servicos as $item)
                                                     @if ($item->status == \App\Models\SolicitacaoServico::STATUS_ENUM['cancelada'])
                                                         <tr>
-                                                            <td>{{ $item->motorista->motorista }}</td>
+                                                            <td>{{ $item->motorista ? $item->motorista->motorista : 'Não atribuido' }}</td>
                                                             <td>{{ $item->beneficiario->nome }}</td>
                                                             <td>{{ $item->codigo_solicitante }}</td>
                                                             <td>{{ date('d/m/Y', strtotime($item->data_solicitacao)) }}

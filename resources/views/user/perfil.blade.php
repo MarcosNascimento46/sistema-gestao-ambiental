@@ -442,7 +442,10 @@
                 if (this.files && this.files[0]) {
                     var file = new FileReader();
                     file.onload = function(e) {
-                        document.getElementById("photo").src = e.target.result;
+                        var img = document.querySelector("#photo img");
+                        if (img) {
+                            img.src = e.target.result;
+                        }
                     };
                     file.readAsDataURL(this.files[0]);
                 }
@@ -456,6 +459,8 @@
                 document.getElementById('bairro').value=("");
                 document.getElementById('cidade').value=("");
                 document.getElementById('uf').value=("");
+                document.getElementById('cidade').disabled = false;
+                document.getElementById('uf').disabled = false;
             }
 
             function meu_callback(conteudo) {
@@ -465,6 +470,8 @@
                     document.getElementById('bairro').value=(conteudo.bairro);
                     document.getElementById('cidade').value=(conteudo.localidade);
                     document.getElementById('uf').value=(conteudo.uf);
+                    document.getElementById('cidade').disabled = true;
+                    document.getElementById('uf').disabled = true;
                 } //end if.
                 else {
                     //CEP não Encontrado.
@@ -532,6 +539,76 @@
                     }
                 });
             });
+
+            (function () {
+                const basicForm = document.getElementById('form-alterar-dados-basicos');
+                const loginForm = document.getElementById('form-alterar-email-senha');
+                if (!basicForm || !loginForm) return;
+
+                const storageKey = 'perfil_dados_basicos_draft';
+                const fields = [
+                    { key: 'nome', selector: '[name="nome_de_exibição"]' },
+                    { key: 'rg', selector: '#rg' },
+                    { key: 'orgao_emissor', selector: '[name="orgão_emissor"]' },
+                    { key: 'cpf', selector: '#cpf' },
+                    { key: 'telefone', selector: '#telefone' }
+                ];
+                let basicDirty = false;
+
+                const getField = (field) => basicForm.querySelector(field.selector);
+
+                const loadDraft = () => {
+                    let draft = {};
+                    try {
+                        draft = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                    } catch (e) {
+                        draft = {};
+                    }
+                    fields.forEach((field) => {
+                        const el = getField(field);
+                        if (!el || el.disabled) return;
+                        if (draft[field.key] != null && draft[field.key] !== '' && el.value !== draft[field.key]) {
+                            el.value = draft[field.key];
+                        }
+                    });
+                };
+
+                const saveDraft = () => {
+                    const draft = {};
+                    fields.forEach((field) => {
+                        const el = getField(field);
+                        if (!el || el.disabled) return;
+                        draft[field.key] = el.value;
+                    });
+                    localStorage.setItem(storageKey, JSON.stringify(draft));
+                };
+
+                fields.forEach((field) => {
+                    const el = getField(field);
+                    if (!el || el.disabled) return;
+                    el.addEventListener('input', () => {
+                        basicDirty = true;
+                        saveDraft();
+                    });
+                });
+
+                loginForm.addEventListener('submit', (e) => {
+                    if (!basicDirty) return;
+                    const ok = window.confirm('Você tem alterações não salvas em "Dados basicos". Quer continuar e perder essas alterações?');
+                    if (!ok) e.preventDefault();
+                });
+
+                basicForm.addEventListener('submit', () => {
+                    localStorage.removeItem(storageKey);
+                });
+
+                const basicSuccess = @json(session('success_dados_basicos') ? true : false);
+                if (basicSuccess) {
+                    localStorage.removeItem(storageKey);
+                } else {
+                    loadDraft();
+                }
+            })();
         </script>
         @if (old('rua') != null)
             <script>

@@ -17,43 +17,47 @@
                                 @method('PUT')
                                 <div class="form-row">
                                     <div class="col-md-6 form-group">
-                                        <label for="cultura">{{ __('Cultura') }}<span
-                                                style="color: red; font-weight: bold;">*</span></label>
-                                        <input id="cultura" class="form-control" type="string" name="cultura"
-                                            value="{{ $aracao->cultura }}" required autofocus autocomplete="cultura">
+                                        <label for="solicitante">{{ __('Solicitante') }}</label>
+                                        <input id="solicitante" class="form-control" type="string" name="solicitante"
+                                            value="{{ $aracao->solicitante }}" autofocus autocomplete="solicitante"
+                                            placeholder="Digite o nome do solicitante...">
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="ponto_localizacao">{{ __('Ponto de Referência') }}<span
-                                                style="color: red; font-weight: bold;">*</span></label>
-                                        <input id="ponto_localizacao" class="form-control" type="string"
-                                            name="ponto_localizacao" value="{{ $aracao->ponto_localizacao }}" required
-                                            autofocus autocomplete="ponto_localizacao"
-                                            placeholder="Digite o ponto de referência...">
+                                        <label for="cultura">{{ __('Cultura') }}</label>
+                                        <input id="cultura" class="form-control" type="string" name="cultura"
+                                            value="{{ $aracao->cultura }}" autocomplete="cultura"
+                                            placeholder="Digite o nome da cultura...">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-6 form-group">
-                                        <label for="quantidade_horas">{{ __('Quantidade de Horas') }}<span
-                                                style="color: red; font-weight: bold;">*</span></label>
-                                        <input id="quantidade_horas" class="form-control" type="string"
-                                            name="quantidade_horas" value="{{ $aracao->quantidade_horas }}" required
-                                            autofocus autocomplete="quantidade_horas"
-                                            placeholder="Digite a quantidade de Horas...">
+                                        <label for="ponto_localizacao">{{ __('Ponto de Referência') }}</label>
+                                        <input id="ponto_localizacao" class="form-control" type="string"
+                                            name="ponto_localizacao" value="{{ $aracao->ponto_localizacao }}"
+                                            autocomplete="ponto_localizacao"
+                                            placeholder="Digite o ponto de referência...">
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="quantidade_ha">{{ __('Quantidade de Ha') }}<span
-                                                style="color: red; font-weight: bold;">*</span></label>
-                                        <input id="quantidade_ha" class="form-control" type="string" name="quantidade_ha"
-                                            value="{{ $aracao->quantidade_ha }}" required autofocus
-                                            autocomplete="quantidade_ha" placeholder="Digite a quantidade de Ha...">
+                                        <label for="quantidade_ha">{{ __('Área em hectares (ha)') }}</label>
+                                        <input id="quantidade_ha" class="form-control" type="number" name="quantidade_ha"
+                                            value="{{ $aracao->quantidade_ha }}" autocomplete="quantidade_ha"
+                                            placeholder="Ex: 1.5" min="0" step="0.01" inputmode="decimal">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 form-group">
+                                        <label for="quantidade_horas">{{ __('Quantidade de Horas') }}</label>
+                                        <input id="quantidade_horas" class="form-control" type="number"
+                                            name="quantidade_horas" value="{{ $aracao->quantidade_horas }}"
+                                            autocomplete="quantidade_horas"
+                                            placeholder="Ex: 4" min="0" step="1" inputmode="numeric">
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="beneficiario_id">{{ __('Beneficiário') }}<span
-                                                style="color: red; font-weight: bold;">*</span></label>
+                                        <label for="beneficiario_id">{{ __('Beneficiário') }}</label>
                                         <select name="beneficiario_id" id="beneficiario_id"
                                             class="form-control selectpicker @error('beneficiario_id') is-invalid @enderror"
-                                            data-live-search="true" required>
-                                            <option value="" disabled>-- {{ __('Selecione o Beneficiário') }} --
+                                            data-live-search="true">
+                                            <option value="">-- {{ __('Selecione o Beneficiário') }} --
                                             </option>
                                             @foreach ($beneficiarios as $beneficiario)
                                                 <option @if (old('beneficiario_id', $aracao->beneficiario_id) == $beneficiario->id) selected @endif
