@@ -122,6 +122,12 @@
                         <ul class="list-group list-unstyled">
                             <li>
                                 @can('isSecretarioOrBeneficiario', \App\Models\User::class)
+                                    <div title="Solicitar Aração" class="d-flex align-items-center my-1 pt-0 pb-1">
+                                        <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Grupo 1666.svg') }}" alt="Solicitar Aração">
+                                        <div style="font-size: 15px;" class="align-middle mx-3">
+                                            Solicitar Aração
+                                        </div>
+                                    </div>
                                     <div title="Visualizar Aração" class="d-flex align-items-center my-1 pt-0 pb-1">
                                         <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Aração">
                                         <div style="font-size: 15px;" class="align-middle mx-3">
