@@ -26,34 +26,35 @@ class DenunciaController extends Controller
         $denuncias_aprovadas = collect();
         $denuncias_arquivadas = collect();
         $user = auth()->user();
+        $denunciasQuery = Denuncia::query();
         switch ($user->role) {
             case User::ROLE_ENUM['secretario']:
                 switch ($filtro) {
                     case 'pendentes':
-                        $denuncias = Denuncia::where('aprovacao', '1')->orderBy('created_at', 'DESC')->paginate(20);
+                        $denunciasQuery->where('aprovacao', '1');
                         break;
                     case 'deferidas':
-                        $denuncias_concluidas = Denuncia::whereRelation('visita.relatorio', 'aprovacao', Relatorio::APROVACAO_ENUM['aprovado'])->orderBy('created_at', 'DESC')->paginate(20);
-                        $denuncias = Denuncia::where('aprovacao', '2')->whereNotIn('id', $denuncias_concluidas->pluck('id'))->orderBy('created_at', 'DESC')->paginate(20);
+                        $denuncias_concluidas = Denuncia::whereRelation('visita.relatorio', 'aprovacao', Relatorio::APROVACAO_ENUM['aprovado'])->pluck('id');
+                        $denunciasQuery->where('aprovacao', '2')->whereNotIn('id', $denuncias_concluidas);
                         break;
                     case 'indeferidas':
-                        $denuncias = Denuncia::where('aprovacao', '3')->orderBy('created_at', 'DESC')->paginate(20);
+                        $denunciasQuery->where('aprovacao', '3');
                         break;
                     case 'concluidas':
-                        $denuncias = Denuncia::whereRelation('visita.relatorio', 'aprovacao', Relatorio::APROVACAO_ENUM['aprovado'])->orderBy('created_at', 'DESC')->paginate(20);
+                        $denunciasQuery->whereRelation('visita.relatorio', 'aprovacao', Relatorio::APROVACAO_ENUM['aprovado']);
                         break;
                 }
                 break;
             case User::ROLE_ENUM['analista']:
                 switch ($filtro) {
                     case 'pendentes':
-                        $denuncias = Denuncia::where([['aprovacao', '1'], ['analista_id', $user->id]])->orderBy('created_at', 'DESC')->paginate(20);
+                        $denunciasQuery->where([['aprovacao', '1'], ['analista_id', $user->id]]);
                         break;
                     case 'deferidas':
-                        $denuncias = Denuncia::where([['aprovacao', '2'], ['analista_id', $user->id]])->orderBy('created_at', 'DESC')->paginate(20);
+                        $denunciasQuery->where([['aprovacao', '2'], ['analista_id', $user->id]]);
                         break;
                     case 'indeferidas':
-                        $denuncias = Denuncia::where([['aprovacao', '3'], ['analista_id', $user->id]])->orderBy('created_at', 'DESC')->paginate(20);
+                        $denunciasQuery->where([['aprovacao', '3'], ['analista_id', $user->id]]);
                         break;
                 }
                 break;
@@ -64,8 +65,13 @@ class DenunciaController extends Controller
         if($busca != null) {
             $empresas = Empresa::where('nome', 'ilike', '%'. $busca .'%')->get();
             $empresas = $empresas->pluck('id');
-            $denuncias = Denuncia::whereIn('empresa_id', $empresas)->orWhere('empresa_nao_cadastrada', 'ilike', '%'. $busca .'%')->paginate(20);
+            $denunciasQuery->where(function ($query) use ($empresas, $busca) {
+                $query->whereIn('empresa_id', $empresas)
+                    ->orWhere('empresa_nao_cadastrada', 'ilike', '%'. $busca .'%');
+            });
         }
+
+        $denuncias = $denunciasQuery->orderBy('created_at', 'DESC')->paginate(20);
 
         return view('denuncia.index', compact('denuncias', 'analistas', 'filtro', 'busca'));
     }
