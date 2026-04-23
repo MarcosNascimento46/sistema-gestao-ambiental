@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EspecieMuda;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EspecieMudaController extends Controller
@@ -12,13 +13,19 @@ class EspecieMudaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('isSecretarioOrDefinirMudas', User::class);
 
-        $especies = EspecieMuda::orderBy('nome')->paginate(10);
+        $buscar = $request->input('buscar');
 
-        return view('solicitacoes.mudas.especie.index', compact('especies'));
+        if ($buscar != null) {
+            $especies = EspecieMuda::where('nome', 'ILIKE', "%{$buscar}%")->orderBy('nome')->paginate(10);
+        } else {
+            $especies = EspecieMuda::orderBy('nome')->paginate(10);
+        }
+
+        return view('solicitacoes.mudas.especie.index', compact('especies', 'buscar'));
     }
 
     /**
