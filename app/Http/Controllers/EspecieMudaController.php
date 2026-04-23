@@ -16,7 +16,7 @@ class EspecieMudaController extends Controller
     {
         $this->authorize('isSecretarioOrDefinirMudas', User::class);
 
-        $especies = EspecieMuda::orderBy('nome')->paginate(20);
+        $especies = EspecieMuda::orderBy('nome')->paginate(10);
 
         return view('solicitacoes.mudas.especie.index', compact('especies'));
     }
