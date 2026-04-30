@@ -104,6 +104,12 @@
                         <ul class="list-group list-unstyled">
                             <li>
                                 @can('isSecretarioOrBeneficiario', \App\Models\User::class)
+                                    <div title="Adicionar Beneficiario" class="d-flex align-items-center my-1 pt-0 pb-1">
+                                        <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Grupo 1666.svg') }}" alt="Adicionar Beneficiario">
+                                        <div style="font-size: 15px;" class="align-middle mx-3">
+                                            Adicionar Beneficiário
+                                        </div>
+                                    </div>
                                     <div title="Visualizar Beneficiario" class="d-flex align-items-center my-1 pt-0 pb-1">
                                         <img class="icon-licenciamento align-middle" width="20" src="{{ asset('img/Visualizar.svg') }}" alt="Visualizar Beneficiario">
                                         <div style="font-size: 15px;" class="align-middle mx-3">

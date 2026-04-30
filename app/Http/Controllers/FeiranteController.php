@@ -6,7 +6,7 @@ use App\Http\Requests\FeiranteRequest;
 use App\Models\Telefone;
 use App\Models\Endereco;
 use App\Models\Feirante;
-use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -199,7 +199,7 @@ class FeiranteController extends Controller
 
         $data_cadastro = $feirante->created_at->format('d/m/Y');
 
-        $pdf = \Barryvdh\DomPDF\Facade::loadView('pdf.comprovante_cadastro_feirante', ['feirante' => $feirante,
+        $pdf = Pdf::loadView('pdf.comprovante_cadastro_feirante', ['feirante' => $feirante,
                                                 'data_cadastro' => $data_cadastro, 'endereco_comercio' => $endereco_comercio]);
 
         return $pdf->setPaper('a4')->stream('comprovante_cadastro_feirante.pdf');

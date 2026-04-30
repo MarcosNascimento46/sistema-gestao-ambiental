@@ -16,11 +16,23 @@ class EmpresasIndex extends Component
     public function render()
     {
         $requerentes = Requerente::all();
-        $search = preg_replace('/([0-9])/', '%$1', $this->search) . '%';
-        $empresas = Empresa::where('nome', 'ilike', '%' . $this->search . '%')
-            ->orWhere('cpf_cnpj', 'like', $search)
-            ->orderBy('nome')
-            ->paginate(20);
+        $search = trim($this->search);
+        $digits = preg_replace('/\D/', '', $search);
+
+        $empresasQuery = Empresa::query();
+
+        if ($search !== '') {
+            $empresasQuery->where('nome', 'ilike', '%' . $search . '%');
+
+            if ($digits !== '') {
+                $empresasQuery->orWhereRaw(
+                    "regexp_replace(cpf_cnpj, '[^0-9]', '', 'g') like ?",
+                    ['%' . $digits . '%']
+                );
+            }
+        }
+
+        $empresas = $empresasQuery->orderBy('nome')->paginate(20);
         return view('livewire.empresas-index', ['empresas' => $empresas, 'requerentes' => $requerentes]);
     }
 

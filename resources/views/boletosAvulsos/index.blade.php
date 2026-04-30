@@ -6,8 +6,8 @@
                 <div class="col-md-12">
                     <div class="form-row">
                         <div class="col-md-12">
-                            <h4 class="card-title">Cadastrar uma empresa</h4>
-                            <h5 class="card-subtitle mb-2 text-muted"><a class="text-muted" href="{{route('boletosAvulsos.index')}}">Boletos Avulsos</a> > Cadastrar empresa</h5>
+                            <h4 class="card-title">Gerar boletos avulsos</h4>
+                            <h5 class="card-subtitle mb-2 text-muted"><a class="text-muted" href="{{route('boletosAvulsos.index')}}">Boletos Avulsos</a> > Gerar boletos avulsos</h5>
                         </div>
                         
                     </div>

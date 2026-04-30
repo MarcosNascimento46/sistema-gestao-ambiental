@@ -177,9 +177,11 @@ class VisitaController extends Controller
     {
         $this->authorize('isSecretarioOrProtocolista', User::class);
         $request->validate([
-            'data_marcada' => 'required|date',
+            'data_marcada' => 'required|date|after_or_equal:today',
             'requerimento' => 'required',
             'analista' => 'required',
+        ], [
+            'data_marcada.after_or_equal' => 'O campo data deve ser uma data posterior ou igual a hoje.',
         ]);
 
         $visita = new Visita();
@@ -251,9 +253,11 @@ class VisitaController extends Controller
         }
 
         $request->validate([
-            'data_marcada' => 'required|date',
+            'data_marcada' => 'required|date|after_or_equal:today',
             'requerimento' => 'required',
             'analista' => 'required',
+        ], [
+            'data_marcada.after_or_equal' => 'O campo data deve ser uma data posterior ou igual a hoje.',
         ]);
 
         if ($visita->requerimento_id != $request->requerimento) {
@@ -327,8 +331,10 @@ class VisitaController extends Controller
     {
         $this->authorize('isSecretario', User::class);
         $request->validate([
-            'data' => 'required',
+            'data' => 'required|date|after_or_equal:today',
             'analista' => 'required',
+        ], [
+            'data.after_or_equal' => 'O campo data deve ser uma data posterior ou igual a hoje.',
         ]);
 
         $visita = new Visita();
@@ -354,8 +360,10 @@ class VisitaController extends Controller
             return redirect()->back()->with(['error' => 'Você não pode editar uma visita já realizada.']);
         } else {
             $request->validate([
-                'data' => 'required|date',
+                'data' => 'required|date|after_or_equal:today',
                 'analista' => 'required',
+            ], [
+                'data.after_or_equal' => 'O campo data deve ser uma data posterior ou igual a hoje.',
             ]);
         }
 
@@ -394,9 +402,11 @@ class VisitaController extends Controller
     public function createVisitaSolicitacaoPoda(Request $request)
     {
         $request->validate([
-            'data' => 'required',
+            'data' => 'required|date|after_or_equal:today',
             'analista' => 'required',
             'solicitacao_id' => 'required',
+        ], [
+            'data.after_or_equal' => 'O campo data deve ser uma data posterior ou igual a hoje.',
         ]);
 
         $visita = new Visita();

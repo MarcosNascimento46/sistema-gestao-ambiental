@@ -36,12 +36,30 @@ class EmpresaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexEmpresas()
+    public function indexEmpresas(Request $request)
     {
         $this->authorize('isSecretarioOrAnalista', User::class);
+        $buscar = $request->input('buscar');
         $requerentes = Requerente::all();
+        
+        if ($buscar != null) {
+            $digits = preg_replace('/\D/', '', $buscar);
 
-        return view('empresa.index-empresas', ['requerentes' => $requerentes]);
+            $empresas = Empresa::where(function ($query) use ($buscar, $digits) {
+                $query->where('nome', 'ILIKE', "%{$buscar}%");
+
+                if ($digits !== '') {
+                    $query->orWhereRaw(
+                        "regexp_replace(cpf_cnpj, '[^0-9]', '', 'g') like ?",
+                        ['%' . $digits . '%']
+                    );
+                }
+            })->orderBy('nome')->paginate(20);
+        } else {
+            $empresas = Empresa::orderBy('nome')->paginate(20);
+        }
+
+        return view('empresa.index-empresas', compact('requerentes', 'empresas', 'buscar'));
     }
 
     /**
