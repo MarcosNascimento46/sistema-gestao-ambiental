@@ -23,7 +23,7 @@ class PipeiroController extends Controller
         }
 
         $motoristas = $motoristasQuery
-            ->paginate(10)
+            ->paginate(15)
             ->appends($request->query());
 
         return view('pipeiro.index', compact('motoristas'));
