@@ -2,12 +2,16 @@
 
 namespace App\Console\Commands;
 
+use DOMDocument;
+use DOMXPath;
 use App\Models\BoletoAvulso;
 use App\Models\WebServiceCaixa\ConsultarBoletoRemessaAvulso;
 use App\Models\WebServiceCaixa\Pessoa;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use RuntimeException;
+use Throwable;
 
 class AtualizarStatusBoletosAvulsos extends Command
 {
@@ -59,10 +63,23 @@ class AtualizarStatusBoletosAvulsos extends Command
                     });
             })
             ->lazy()->each(function ($boleto) {
-                $dados = $this->consultaStatus($boleto);
-                DB::table('boleto_avulsos')
-                    ->where('id', $boleto->id)
-                    ->update(['status_pagamento' => $dados['status'], 'data_pagamento' => $dados['data']]);
+                try {
+                    $dados = $this->consultaStatus($boleto);
+                    DB::table('boleto_avulsos')
+                        ->where('id', $boleto->id)
+                        ->update([
+                            'status_pagamento' => $dados['status'],
+                            'data_pagamento' => $dados['data'],
+                            'updated_at' => now(),
+                        ]);
+                } catch (Throwable $e) {
+                    Log::warning('Falha ao consultar boleto avulso na Caixa.', [
+                        'boleto_avulso_id' => $boleto->id,
+                        'nosso_numero' => $boleto->nosso_numero,
+                        'erro' => $e->getMessage(),
+                    ]);
+                    $this->warn("Boleto avulso {$boleto->id} ignorado: {$e->getMessage()}");
+                }
             });
     }
 
@@ -104,10 +121,28 @@ class AtualizarStatusBoletosAvulsos extends Command
         ]);
 
         $response = curl_exec($curl);
+        $curl_error = curl_error($curl);
+        $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         curl_close($curl);
-        $resultado = (new ConsultarBoletoRemessaAvulso())->xmlToArray($response);
-        delete_file($boleto->resposta_consultar_boleto_avulso);
+
+        if ($response === false) {
+            throw new RuntimeException($curl_error ?: 'Erro desconhecido ao consultar a Caixa.');
+        }
+
+        $this->salvarRespostaConsulta($boleto, $response);
+
+        if ($http_code >= 400) {
+            throw new RuntimeException("Caixa retornou HTTP {$http_code}.");
+        }
+
+        return $this->statusPorRetorno($this->extrairRetornoConsulta($response));
+    }
+
+    private function salvarRespostaConsulta(BoletoAvulso $boleto, string $response): void
+    {
+        delete_file($boleto->resposta_consultar_boleto);
+
         $caminho_arquivo = 'remessas/';
         $documento_nome = 'resposta_consultar_boleto_remessa_avulso' . $boleto->id . '.xml';
 
@@ -115,24 +150,69 @@ class AtualizarStatusBoletosAvulsos extends Command
         fwrite($file, $response);
         fclose($file);
 
-        $this->resposta_consultar_boleto_avulso = $caminho_arquivo . $documento_nome;
-        switch ($resultado['COD_RETORNO']['DADOS']) {
-            case 0:
-                switch ($resultado['RETORNO']) {
-                    case '(0) OPERACAO EFETUADA - SITUACAO DO TITULO = EM ABERTO':
-                        return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['nao_pago'], 'data' => null];
-                    case '(0) OPERACAO EFETUADA - SITUACAO DO TITULO = BAIXA POR DEVOLUCAO':
-                        return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['vencido'], 'data' => null];
-                    case '(0) OPERACAO EFETUADA - SITUACAO DO TITULO = LIQUIDADO':
-                        return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['pago'], 'data' => now()];
-                    default:
-                        return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['nao_pago'], 'data' => null];
-                }
-                break;
-            default:
-                return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['nao_pago'], 'data' => null];
+        DB::table('boleto_avulsos')
+            ->where('id', $boleto->id)
+            ->update(['resposta_consultar_boleto' => $caminho_arquivo . $documento_nome]);
+    }
+
+    private function extrairRetornoConsulta(string $response): string
+    {
+        try {
+            $resultado = (new ConsultarBoletoRemessaAvulso())->xmlToArray($response);
+            if (isset($resultado['COD_RETORNO']['DADOS']) && (int) $resultado['COD_RETORNO']['DADOS'] === 0 && isset($resultado['RETORNO'])) {
+                return $resultado['RETORNO'];
+            }
+        } catch (Throwable $e) {
+            Log::debug('Parser legado da consulta de boleto avulso falhou; tentando fallback.', [
+                'erro' => $e->getMessage(),
+            ]);
         }
 
-        return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['nao_pago'], 'data' => null];
+        return $this->extrairRetornoConsultaPorXpath($response);
+    }
+
+    private function extrairRetornoConsultaPorXpath(string $response): string
+    {
+        $dom_document = new DOMDocument();
+        $libxml_previous_state = libxml_use_internal_errors(true);
+
+        try {
+            if (! $dom_document->loadXML($response)) {
+                $erros = array_map(function ($erro) {
+                    return trim($erro->message);
+                }, libxml_get_errors());
+
+                throw new RuntimeException('Resposta XML invalida da Caixa: ' . implode(' | ', $erros));
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($libxml_previous_state);
+        }
+
+        $xpath = new DOMXPath($dom_document);
+        $retornos = $xpath->query('//*[local-name()="RETORNO"]');
+        if ($retornos === false || $retornos->length === 0) {
+            throw new RuntimeException('Resposta da Caixa sem tag RETORNO.');
+        }
+
+        return trim($retornos->item(0)->textContent);
+    }
+
+    private function statusPorRetorno(string $retorno): array
+    {
+        switch ($retorno) {
+            case '(0) OPERACAO EFETUADA - SITUACAO DO TITULO = EM ABERTO':
+                return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['nao_pago'], 'data' => null];
+            case '(0) OPERACAO EFETUADA - SITUACAO DO TITULO = BAIXA POR DEVOLUCAO':
+                return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['vencido'], 'data' => null];
+            case '(0) OPERACAO EFETUADA - SITUACAO DO TITULO = LIQUIDADO':
+                return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['pago'], 'data' => now()];
+            default:
+                Log::warning('Retorno desconhecido da consulta de boleto avulso.', [
+                    'retorno' => $retorno,
+                ]);
+
+                return ['status' => BoletoAvulso::STATUS_PAGAMENTO_ENUM['nao_pago'], 'data' => null];
+        }
     }
 }
